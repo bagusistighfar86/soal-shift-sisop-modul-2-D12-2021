@@ -9,6 +9,7 @@
 Keterangan : Afdhal Ma'ruf Lukman ==> tidak ada kontribusi dan komunikasi sama sekali (hilang tanpa kabar)
 
 ## Soal No 3
+### Main Soal No 3
 Berikut adalah main source code dari soal no3. Tahapan proses soal no.3 :
 1. Membuat daemon proses melalui fungsi daemonize
 2. Membuat killer_script untuk mematikan daemon proses melalui bash script sesuai dengan argumen yang ditentukan
@@ -88,3 +89,101 @@ int main(int argc, char const *argv[]) {
     }
 }
 ```
+### Proses Daemon Proses (Daemonize)
+```c
+void daemonize(){
+    pid_t pid, sid;        // Variabel untuk menyimpan PID
+
+    pid = fork();     // Menyimpan PID dari Child Process
+
+    /* Keluar saat fork gagal
+    * (nilai variabel pid < 0) */
+    if (pid < 0) {
+        exit(EXIT_FAILURE);
+    }
+
+    /* Keluar saat fork berhasil
+    * (nilai variabel pid adalah PID dari child process) */
+    if (pid > 0) {
+        exit(EXIT_SUCCESS);
+    }
+
+    umask(0);
+
+    sid = setsid();
+    if (sid < 0) {
+        exit(EXIT_FAILURE);
+    }
+
+    if ((chdir("/home/bagus/Documents/Modul2/soal3")) < 0) {
+        exit(EXIT_FAILURE);
+    }
+
+    close(STDIN_FILENO);
+    close(STDOUT_FILENO);
+    close(STDERR_FILENO);
+}
+```
+path background proses yang akan dijalankan menuju ke/home/bagus/Documents/Modul2/soal3
+### Proses Membuat Killer_Script
+```c
+void killer_script(char const *argv[], int pid){
+    FILE *file_killer = fopen("killer.sh","w");
+    // 3e. Membuat dua mode kill bash
+    if(strcmp(argv[1],"-z") == 0){ 
+        fprintf(file_killer,"#!/bin/bash\n killall -9 %s\n", argv[0]);
+    }
+    else if(strcmp(argv[1],"-x") == 0){
+        fprintf(file_killer,"#!/bin/bash\n kill -15 %d\n", pid);
+    }
+    fprintf(file_killer,"rm killer.sh\n");
+    fclose(file_killer);
+}
+```
+Pada function ini dibuat suatu bash script killer berdasarkan kondisi dimana saat argv[1] bernilai "-x" atau "-z".
+* Kondisi argv[1] == -z
+  Semua proses akan di kill saat itu juga tanpa menunggu proses selesai
+* Kondisi argv[1] == -x
+  Parent proses akan di kill saat itu juga, tetapi background proses dari child masih tetap berjalan sampai proses delete directory aslinya selesai
+Setelah kill, maka file_killer tersebut akan otomatis terhapus.
+
+### Proses mkdir
+```c
+// 3a.Membuat folder berdasarkan timestamp
+char *arg_mkdir[] = {"mkdir",nama_folder,NULL};
+execv("/bin/mkdir",arg_mkdir);
+```
+Proses tersebut akan menjalankan arg_mkdir yang isinya perintah bash script mkdir pada child
+
+### Proses download
+```c
+while (wait(&status1) > 0);
+for (i=1; i<=10; i++){
+pid_t child3 = fork();
+if(child3 < 0){
+    exit(EXIT_FAILURE);
+}
+if(child3  == 0){
+while (wait(&status1) > 0);
+    for (i=1; i<=10; i++){
+    pid_t child3 = fork();
+    if(child3 < 0){
+        exit(EXIT_FAILURE);
+    }
+    if(child3  == 0){
+        time (&rawtime);
+        tmp = localtime(&rawtime);
+        strftime(time_temp,sizeof(time_temp),"%Y-%m-%d_%X",tmp);
+        sprintf(path_gambar, "%s/%s.jpg", nama_folder, time_temp);
+        size = (int)time(NULL);
+        sprintf(url, "https://picsum.photos/%d", (size%1000)+50);
+        char *arg_wget[] = {"wget", "-bq", "-O", path_gambar, url, NULL};
+        execv("/bin/wget",arg_wget); 
+    }
+    // fprintf(process_log,"Gambar %s berhasil diunduh\n",path_gambar);
+    // fflush(process_log);
+    sleep(5); 
+    }
+}
+```
+Di proses download ini file akan didownload berdasarkan waktu real time saat ini yang didaptkan dari epoch unix second. Proses download ini disendirikan dengan proses mkdir agar tidak menghambat proses mkdir. Selama for 1-10,  
