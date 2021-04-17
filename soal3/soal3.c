@@ -92,7 +92,6 @@ int main(int argc, char const *argv[]) {
     time_t rawtime;
 
     while (1) {
-        int status1;
         time (&rawtime);
         struct tm *tmp = localtime(&rawtime);
         strftime(nama_folder,sizeof(nama_folder),"%Y-%m-%d_%X",tmp);
@@ -105,7 +104,7 @@ int main(int argc, char const *argv[]) {
         }
         else if(child1 == 0){
             pid_t child2 = fork();
-            int status2;
+            int status1;
             if (child2 < 0){
                 exit(EXIT_FAILURE);
             }
@@ -117,7 +116,7 @@ int main(int argc, char const *argv[]) {
                 // fflush(process_log);
             }
             else {
-                while (wait(&status2) > 0);
+                while (wait(&status1) > 0);
                 for (i=1; i<=10; i++){
                     pid_t child3 = fork();
                     if(child3 < 0){
