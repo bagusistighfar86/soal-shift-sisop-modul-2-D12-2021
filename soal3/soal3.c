@@ -76,6 +76,7 @@ void killer_script(char const *argv[], int pid){
     else if(strcmp(argv[1],"-x") == 0){
         fprintf(file_killer,"#!/bin/bash\n kill -15 %d\n", pid);
     }
+    fprintf(file_killer, "rm killer.sh\n");
     fclose(file_killer);
 }
 
