@@ -71,7 +71,7 @@ void killer_script(char const *argv[], int pid){
     FILE *file_killer = fopen("killer.sh","w");
     // 3e. Membuat dua mode kill bash
     if(strcmp(argv[1],"-z") == 0){ 
-        fprintf(file_killer,"#!/bin/bash\n killall -9 soal3\n");
+        fprintf(file_killer,"#!/bin/bash\n killall -9 %s\n", argv[0]);
     }
     else if(strcmp(argv[1],"-x") == 0){
         fprintf(file_killer,"#!/bin/bash\n kill -15 %d\n", pid);
