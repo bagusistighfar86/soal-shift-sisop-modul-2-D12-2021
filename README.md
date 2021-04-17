@@ -5,7 +5,8 @@
 |Muhammad Bagus Istighfar|05111940000049|
 |Rizqi Rifaldi|05111940000068|
 |Afdhal Ma'ruf Lukman|05111940007001|
-
+Keterangan : Afdhal Ma'ruf Lukman ==> tidak ada kontribusi dan komunikasi sama sekali (hilang tanpa kabar)
+ 	     2 praktikum tidak mengikuti
 ## Soal No 1
 
 Pada hari ulang tahun Stevany, Steven ingin memberikan Stevany zip berisikan hal-hal yang
