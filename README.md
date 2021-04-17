@@ -466,7 +466,7 @@ Kemudian untuk masalah berjalan pada tanggal 9 April pada jam 16:22, pertama tam
 time_t t = time (NULL);
 struct tm *tmp = localtime(&t);
 ```
-Potongan kode tersebut berfungsi untuk mengambil waktu lokal yang ada pada komputer kita. Kemudian untuk mencocokkan waktu lokal dan tanggal 9 April jam 16:22 agar semua proses soal 1a sampai 1d berjalan pada tanggal dan jam tersebut,maka kita menggunakan percabangan seperti berikut :
+Potongan kode tersebut berfungsi untuk mengambil waktu lokal yang ada pada komputer kita. Dikarenakan berhubungan dengan waktu, maka diperlukan header ```time.h```. Kemudian untuk mencocokkan waktu lokal dan tanggal 9 April jam 16:22 agar semua proses soal 1a sampai 1d berjalan pada tanggal dan jam tersebut,maka kita menggunakan percabangan seperti berikut :
 ```C
 if(tmp->tm_mon+1 == 4 && tmp->tm_mday == 9 && tmp->tm_hour == 16 && tmp->tm_min == 22 && tmp->tm_sec == 0)
 ```
@@ -476,7 +476,41 @@ Penjelasan :
 * tm_hour = Jam, karena diminta pada jam 16 maka sama dengan 16
 * tm_min = menit, karena diminta pada menit ke 22 maka sama dengan 22
 * tm_sec = detik, karena diminta tepat pukul 16:22, maka detiknya adalah 0
+
 Pada potongan kode tersebut dimaksudkan jika waktu lokal di komputer kita adalah 9 April jam 16:22, maka semua proses pada soal 1a sampai 1d baru akan berjalan.
 
+### Soal 1f
+Pada soal f, program diminta untuk membuat zip dari folder Musyik, Pyoto dan Fylm dengan nama Lopyu_Stevany dan menghapus folder kosong MUSIK, FOTO, dan FILM. Semuanya dilakukan pada hari ulang tahun Stevany yaitu pada tanggal 9 April jam 22:22. Pertama - tama, pada else dari percabangan pada soal 1e, kita akan mencocokkan waktu lokal komputer kita dengan tanggal 9 April Jam 22:22 :
+```C
+else if (tmp->tm_mon+1 == 4 && tmp->tm_mday == 9 && tmp->tm_hour == 22 && tmp->tm_min == 22 && tmp->tm_sec == 0)
+```
+Penjelasan :
+* tm_mon = Bulan, karena dimulai dari 0 maka ditambah 1 dan sama dengan 4 untuk bulan april
+* tm_mday = Hari, karena diminta pada tanggal 9 maka sama dengan 9
+* tm_hour = Jam, karena diminta pada jam 22 maka sama dengan 22
+* tm_min = menit, karena diminta pada menit ke 22 maka sama dengan 22
+* tm_sec = detik, karena diminta tepat pukul 16:22, maka detiknya adalah 0
+
+Pada potongan kode tersebut dimaksudkan jika waktu lokal di komputer kita adalah 9 April jam 22:22, maka semua proses untuk melakukan zip dan menghapus folder kosong baru akan berjalan.
+Kemudian didalamnya ```else if``` tersebut, saya mendeklarasikan ```child_id6``` dan saya  melakukan ```fork()``` untuk membuat proses baru pada ```child_id6``` dan pada child proses dari ```child_id6``` atau jika ```child_id6 == 0```, akan melakukan zip dari folder Musyik, Pyoto, dan Fylm menjadi file zip bernama ```Lopyu_Stevany.zip``` dan pada parent proses nya atau ```child_id6 > 0```, terjadi proses untuk menghapus folder kosong MUSIK, FOTO dan FILM.
+Source Code :
+```C
+pid_t child_id6;
+int status2;
+child_id6 = fork();
+if(child_id6 < 0){
+	exit(EXIT_FAILURE);
+}
+if(child_id6 == 0){
+	char *argv[] = {"zip","-rmq","Lopyu_Stevany","Musyik","Pyoto","Fylm",NULL};
+	execv("/bin/zip",argv);
+}
+else{
+	while((wait(&status2)) > 0);
+	char *argv[] = {"rm","-r","/home/rizqi/modul2/MUSIK","/home/rizqi/modul2/FOTO","/home/rizqi/modul2/FILM",NULL};
+	execv("/bin/rm",argv);
+}
+
+```
 ## Soal No 2
 ## Soal No 3
