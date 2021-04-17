@@ -386,5 +386,56 @@ if(child_id4 == 0){
 	}
 }
 ```
+### Soal 1d
+Pada bagian d, program diharuskan bisa memindahkan semua isi dari folder - folder hasil unzip dari file yang sudah didownload ke dalam folder - folder yang sudah dibuat pada soal bagian a, yaitu semua isi folder MUSIK harus dipindahkan ke dalam folder Musyik, semua isi folder FOTO harus dipindahkan ke dalam folder Pyoto, dan semua isi folder FILM harus dipindahkan ke dalam folder Fylm. Pertama - tama saya membuat fungsi baru yang berfungsi untuk memindahkan semua isi folder ke folder yang lain. Fungsi ini memiliki 2 parameter, yaitu path isi folder yang akan dipindahkan (basepath) dan path tujuan kemana akan dipindahkan (destination). Fungsi ini hampir sama seperti untuk listing file yang dicontohkan pada modul 2, bedanya adalah bukannya melakukan print, fungsi ini akan melakukan ```fork()``` yang prosesnya untuk melakukan ```move``` dari file-file tersebut. Source Code:
+```C
+void move(char *basepath,char *destination){
+	char path[1000];
+	pid_t child_id;
+	int status;
+	struct dirent *dp;
+	DIR *dir = opendir(basepath);
+	if(!dir){
+		return;
+	}
+	while((dp = readdir(dir)) != NULL){
+		if(strcmp(dp->d_name,".") != 0 && strcmp(dp->d_name,"..") !=0){
+			strcpy(path,basepath);
+			strcat(path,"/");
+			strcat(path,dp->d_name);
+			child_id = fork();
+			if(child_id < 0){
+				exit(EXIT_FAILURE);
+			}
+			if(child_id == 0){
+				char *argv[]= {"mv",path,destination,NULL};
+				execv("/bin/mv",argv);
+			}
+		}
+	}
+	closedir(dir);
+}
+```
+Pada fungsi ini, karena berurusan dengan file, maka memerlukan header ```dirent.h```. Setelah proses dari ```child_id4``` selesai, maka pada else dari ```child_id4``` atau jika ```child_id4 > 0```, saya kembali melakukan ```fork()``` pada child_id5 untuk membuat proses baru, yang jika ```child_id5 == 0``` saya kembali melakukan ```fork()``` lagi untuk membuat proses baru pada ```child_id5a```. Pada proses di ```child_id5a``` ini, pada saat child proccess atau ```child_id5a == 0```, akan menjalankan fungsi move yang sudah dijelaskan tadi, untuk memindahkan semua isi folder MUSIK ke dalam folder Musyik. Source Code :
+```C
+child_id5 = fork();
+if(child_id5 < 0){
+	exit(EXIT_FAILURE);
+}
+if(child_id5 == 0){
+	child_id5a = fork();
+	if(child_id5a < 0){
+		exit(EXIT_FAILURE);
+	}
+	if(child_id5a == 0){
+		//pindah MUSIK ke Musyik
+		//char *argv[] = {"mv","/home/rizqi/modul2/MUSIK/*","/home/rizqi/modul2/Musyik",NULL};
+		//execv("/bin/mv",argv);
+		move("/home/rizqi/modul2/MUSIK","/home/rizqi/modul2/Musyik");
+		_exit(1);
+	}
+}
+```
+
 ## Soal No 2
 ## Soal No 3
