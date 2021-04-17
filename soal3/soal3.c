@@ -76,18 +76,18 @@ void killer_script(char const *argv[], int pid){
     else if(strcmp(argv[1],"-x") == 0){
         fprintf(file_killer,"#!/bin/bash\n kill -15 %d\n", pid);
     }
-    fprintf(file_killer, "rm killer.sh\n");
+    fprintf(file_killer,"rm killer.sh\n");
     fclose(file_killer);
 }
 
 int main(int argc, char const *argv[]) {
     daemonize();
-    // FILE *folderlog;
+    // FILE *process_log;
     
     killer_script(argv,(int)getpid());
 
     int i, size;
-    // folderlog = fopen("folderlog.txt", "w+");
+    // process_log = fopen("process_log.txt", "w+");
     char nama_folder[100], path_gambar[250], url[100], time_temp[100];
     time_t rawtime;
 
@@ -97,8 +97,8 @@ int main(int argc, char const *argv[]) {
         struct tm *tmp = localtime(&rawtime);
         strftime(nama_folder,sizeof(nama_folder),"%Y-%m-%d_%X",tmp);
         pid_t child1 = fork();
-        // fprintf(folderlog,"%s",nama_folder);
-        // fflush(folderlog);
+        // fprintf(process_log,"%s",nama_folder);
+        // fflush(process_log);
 
         if(child1 < 0){
             exit(EXIT_FAILURE);
@@ -113,8 +113,8 @@ int main(int argc, char const *argv[]) {
                 // 3a.Membuat folder berdasarkan timestamp
                 char *arg_mkdir[] = {"mkdir",nama_folder,NULL};
                 execv("/bin/mkdir",arg_mkdir);
-                // fprintf(folderlog,"Folder %s berhasil dibuat\n",nama_folder);
-                // fflush(folderlog);
+                // fprintf(process_log,"Folder %s berhasil dibuat\n",nama_folder);
+                // fflush(process_log);
             }
             else {
                 while (wait(&status2) > 0);
@@ -133,8 +133,8 @@ int main(int argc, char const *argv[]) {
                         char *arg_wget[] = {"wget", "-bq", "-O", path_gambar, url, NULL};
                         execv("/bin/wget",arg_wget); 
                     }
-                    // fprintf(folderlog,"Gambar %s berhasil diunduh\n",path_gambar);
-                    // fflush(folderlog);
+                    // fprintf(process_log,"Gambar %s berhasil diunduh\n",path_gambar);
+                    // fflush(process_log);
                     sleep(5); 
                 }
 
@@ -147,19 +147,19 @@ int main(int argc, char const *argv[]) {
                 file_status = fopen(path_status,"w");
                 fprintf(file_status,"%s",pesan);
                 fclose(file_status);
-                // fprintf(folderlog,"Status pesan : status.txt berhasil dibuat\n");
-                // fflush(folderlog);
+                // fprintf(process_log,"Status pesan : status.txt berhasil dibuat\n");
+                // fflush(process_log);
 
                 // 3c. Membuat zip dan menghapus directory aslinya
                 char nama_zip[150];
                 sprintf(nama_zip,"%s.zip",nama_folder);
                 char *arg_zip[] = {"zip", "-rm", "-q", nama_zip, nama_folder, NULL};
                 execv("/usr/bin/zip", arg_zip);
-                // fprintf(folderlog,"Status Zip : File zip %s sudah berhasil dibuat\n", nama_zip);
-                // fflush(folderlog); 
+                // fprintf(process_log,"Status Zip : File zip %s sudah berhasil dibuat\n", nama_zip);
+                // fflush(process_log); 
             }
         }
         sleep(40);
     }
-    // fclose(folderlog);
+    // fclose(process_log);
 }
