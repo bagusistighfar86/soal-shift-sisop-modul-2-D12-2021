@@ -297,14 +297,14 @@ Dan selain menggunakan header pada template membuat daemon, saya juga menggunaka
 Pada bagian a, program yang dibuat harus bisa membuat direktori atau folder yang bernama : Musyik untuk mp3, Pyoto untuk jpg, dan Fylm untuk menyimpan file mp4.
 Maka dari itu kita harus melakukan ```fork()``` pada ```child_id1``` untuk membuat proses baru, yang isinya adalah untuk membuat 3 direktori atau folder yang dibutuhkan yaitu Musyik, Pyoto, dan Fylm.
 ```C
-  child_id1 = fork();
-			if(child_id1 < 0){
-				exit(EXIT_FAILURE);
-			}
-			if(child_id1 == 0){
-				char *argv[] = {"mkdir","/home/rizqi/modul2/Musyik","/home/rizqi/modul2/Fylm","/home/rizqi/modul2/Pyoto",NULL};
-				execv("/bin/mkdir",argv);
-			}
+child_id1 = fork();
+if(child_id1 < 0){
+	exit(EXIT_FAILURE);
+}
+if(child_id1 == 0){
+	char *argv[] = {"mkdir","/home/rizqi/modul2/Musyik","/home/rizqi/modul2/Fylm","/home/rizqi/modul2/Pyoto",NULL};
+	execv("/bin/mkdir",argv);
+}
 ```
 Pertama-tama kita harus melakukan ```fork()``` untuk membuat proses baru. Jika ```child_id1 == 0``` yang berarti merupakan child, program akan membuat direktori atau folder baru dengan menggunakan ```argv[]``` dan ```exec```.
 Dan else setelah if pada source code berikut adalah untuk fork child_id2.
@@ -313,29 +313,78 @@ Dan else setelah if pada source code berikut adalah untuk fork child_id2.
 Pada bagian b, program atau script harus dapat mendownload file berupa zip yang bernama ```Musik_For_Stevany```, ```Foto_For_Stevany```, dan ```Film_For_Stevany```, dan pada bagian b ini langsung dilanjutkan dengan bagian c yaitu melakukan ```extract``` atau ```unzip``` tepat setelah selesai mendownload masing-masing file.
 Source Code :
 ```C
-			child_id2 = fork();
-			if(child_id2 < 0){
-				exit(EXIT_FAILURE);
-			}
-			if(child_id2 == 0){
-				child_id2a = fork();
-				if(child_id2a < 0){
-					exit(EXIT_FAILURE);
-				}
-				if(child_id2a == 0){
-				  //download musik
-					char *argv[] = {"wget","-q","--no-check-certificate","https://drive.google.com/uc?id=1ZG8nRBRPquhYXq_sISdsVcXx5VdEgi-J&export=download","-O","/home/rizqi/modul2/Musik_For_Stevany.zip",NULL};
-					execv("/bin/wget",argv);
-				}
-				else{
-					while((wait(&status)) > 0);
-					//unzip musik
-					char *argv[] = {"unzip","-q","/home/rizqi/modul2/Musik_For_Stevany.zip","-d","/home/rizqi/modul2",NULL};
-					execv("/bin/unzip",argv);
-				}
-			}	
+child_id2 = fork();
+if(child_id2 < 0){
+	exit(EXIT_FAILURE);
+}
+if(child_id2 == 0){
+	child_id2a = fork();
+	if(child_id2a < 0){
+		exit(EXIT_FAILURE);
+	}
+	if(child_id2a == 0){
+		//download musik
+		char *argv[] = {"wget","-q","--no-check-certificate","https://drive.google.com/uc?id=1ZG8nRBRPquhYXq_sISdsVcXx5VdEgi-J&export=download","-O","/home/rizqi/modul2/Musik_For_Stevany.zip",NULL};
+		execv("/bin/wget",argv);
+	}
+	else{
+		while((wait(&status)) > 0);
+		//unzip musik
+		char *argv[] = {"unzip","-q","/home/rizqi/modul2/Musik_For_Stevany.zip","-d","/home/rizqi/modul2",NULL};
+		execv("/bin/unzip",argv);
+	}
+}	
 ```
 Setelah melakukan ```fork()``` pada ```child_id2```, saat ```child_id2 == 0``` saya melakukan ```fork()``` lagi pada ```child_id2a``` yang pada ```child_id2a``` ini nantinya akan melakukan download dari file zip Musik_For_Stevany dan setelah selesai mendownload, selanjutnya file zip tersebut akan langsung diextract atau di unzip ke direktori ```/home/rizqi/modul2```.
 
+Setelah melakukan unzip Musik_For_Stevany, selanjutnya pada else dari ```child_id2``` atau saat ```child_id2 > 0```, saya melakukan ```fork()``` pada ```child_id3```
+dan saat ```child_id3 == 0``` saya melakukan ```fork()``` lagi pada ```child_id3a``` yang pada ```child_id3a``` ini nantinya untuk mendownload file zip Foto_For_Stevany dan melakukan unzip dari file tersebut. Source Code :
+```C
+child_id3 = fork();
+if(child_id3 < 0){
+	exit(EXIT_FAILURE);
+}
+if(child_id3 == 0){
+	child_id3a = fork();
+	if(child_id3a < 0){
+		exit(EXIT_FAILURE);
+	}
+	if(child_id3a == 0){
+		//download foto
+		char *argv[] = {"wget","-q","--no-check-certificate","https://drive.google.com/uc?id=1FsrAzb9B5ixooGUs0dGiBr-rC7TS9wTD&export=download","-O","/home/rizqi/modul2/Foto_For_Stevany.zip",NULL};
+		execv("/bin/wget",argv);
+	}
+	else{
+		while ((wait(&status)) > 0);
+		//unzip foto
+		char *argv[] = {"unzip","-q","/home/rizqi/modul2/Foto_For_Stevany.zip","-d","/home/rizqi/modul2",NULL};
+		execv("/bin/unzip",argv);
+	}
+}
+```
+Dan setelah selesai melakukan download dan unzip dari file Foto_For_Stevany, selanjutnya pada else dari ```child_id3``` atau saat ```child_id3 > 0```, saya melakukan ```fork()``` pada ```child_id4``` dan saat ```child_id4 == 0``` saya melakukan ```fork()``` lagi pada ```child_id4a``` yang pada ```child_id4a``` ini nantinya untuk mendownload file zip Foto_For_Stevany dan melakukan unzip dari file tersebut. Source Code :
+```C
+child_id4 = fork();
+if(child_id4 < 0){
+	exit(EXIT_FAILURE);
+}
+if(child_id4 == 0){
+	child_id4a = fork();
+	if(child_id4a < 0){
+		exit(EXIT_FAILURE);
+	}
+	if(child_id4a == 0){
+		//download film
+		char *argv[] = {"wget","-q","--no-check-certificate","https://drive.google.com/uc?id=1ktjGgDkL0nNpY-vT7rT7O6ZI47Ke9xcp&export=download","-O","/home/rizqi/modul2/Film_For_Stevany.zip",NULL};
+		execv("/bin/wget",argv);
+	}
+	else{
+		while((wait(&status)) > 0);
+		//unzip film
+		char *argv[] = {"unzip","-q","/home/rizqi/modul2/Film_For_Stevany.zip","-d","/home/rizqi/modul2",NULL};
+		execv("/bin/unzip",argv);
+	}
+}
+```
 ## Soal No 2
 ## Soal No 3
