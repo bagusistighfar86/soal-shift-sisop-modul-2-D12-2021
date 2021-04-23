@@ -490,7 +490,7 @@ Penjelasan :
 * tm_mday = Hari, karena diminta pada tanggal 9 maka sama dengan 9
 * tm_hour = Jam, karena diminta pada jam 22 maka sama dengan 22
 * tm_min = menit, karena diminta pada menit ke 22 maka sama dengan 22
-* tm_sec = detik, karena diminta tepat pukul 16:22, maka detiknya adalah 0
+* tm_sec = detik, karena diminta tepat pukul 22:22, maka detiknya adalah 0
 
 Pada potongan kode tersebut dimaksudkan jika waktu lokal di komputer kita adalah 9 April jam 22:22, maka semua proses untuk melakukan zip dan menghapus folder kosong baru akan berjalan.
 Kemudian didalamnya ```else if``` tersebut, saya mendeklarasikan ```child_id6``` dan saya  melakukan ```fork()``` untuk membuat proses baru pada ```child_id6``` dan pada child proses dari ```child_id6``` atau jika ```child_id6 == 0```, akan melakukan zip dari folder Musyik, Pyoto, dan Fylm menjadi file zip bernama ```Lopyu_Stevany.zip``` dan pada parent proses nya atau ```child_id6 > 0```, terjadi proses untuk menghapus folder kosong MUSIK, FOTO dan FILM.
