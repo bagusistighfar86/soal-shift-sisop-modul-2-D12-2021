@@ -525,7 +525,11 @@ Kemudian program tersebut dijalankan :
 
 Setelah executornya dieksekusi, maka program akan berjalan pada latar belakang (daemon) dan jika diperiksa prosesnya dengan menggunakan ```ps -ef``` maka nama programnya akan muncul. (disini nama program saya soal1fix.c) :
 
+[![Whats-App-Image-2021-04-23-at-15-50-33-1.jpg](https://i.postimg.cc/Kv8v3pyK/Whats-App-Image-2021-04-23-at-15-50-33-1.jpg)](https://postimg.cc/t78HL5Jy)
+
 Karena program hanya akan berjalan pada tanggal 9 April tanggal 16:22 dan 22:22, maka pertama kita akan mengganti waktu lokal komputer kita menjadi 9 April 16:22, seperti pada gambar berikut :
+
+[![Whats-App-Image-2021-04-23-at-15-50-33.jpg](https://i.postimg.cc/hPcQy0Rg/Whats-App-Image-2021-04-23-at-15-50-33.jpg)](https://postimg.cc/HjvLjXLP)
 
 Dan jika diperiksa pada folder atau direktori ```modul2```, maka program akan berjalan dan akan menjalankan soal 1a sampai 1d:
 
