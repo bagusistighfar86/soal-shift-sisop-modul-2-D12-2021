@@ -513,6 +513,34 @@ else{
 }
 
 ```
+
+### Jalannya Program
+Pada awalnya, di folder modul 2 hanya ada file ```soal1.c``` dan file executornya, seperti pada gambar berikut :
+
+[![Whats-App-Image-2021-04-21-at-10-59-01.jpg](https://i.postimg.cc/Qx9CnW90/Whats-App-Image-2021-04-21-at-10-59-01.jpg)](https://postimg.cc/4mGXYy19)
+
+Kemudian program tersebut dijalankan :
+
+[![Whats-App-Image-2021-04-21-at-10-59-01-1.jpg](https://i.postimg.cc/X7Pg5FdW/Whats-App-Image-2021-04-21-at-10-59-01-1.jpg)](https://postimg.cc/crQYyvFk)
+
+Setelah executornya dieksekusi, maka program akan berjalan pada latar belakang (daemon) dan jika diperiksa prosesnya dengan menggunakan ```ps -ef``` maka nama programnya akan muncul. (disini nama program saya soal1fix.c) :
+
+Karena program hanya akan berjalan pada tanggal 9 April tanggal 16:22 dan 22:22, maka pertama kita akan mengganti waktu lokal komputer kita menjadi 9 April 16:22, seperti pada gambar berikut :
+
+Dan jika diperiksa pada folder atau direktori ```modul2```, maka program akan berjalan dan akan menjalankan soal 1a sampai 1d:
+
+[![Whats-App-Image-2021-04-21-at-10-59-01-2.jpg](https://i.postimg.cc/8c9r7R3n/Whats-App-Image-2021-04-21-at-10-59-01-2.jpg)](https://postimg.cc/wR5BPm9h)
+
+Program yang berjalan adalah peoses untuk membuat 3 folder, yaitu Musyik, Pyoto, dan Fylm, setelah itu mendownload 3 file yaitu Musik_For_Stevany, Foto_For_Stevany, dan Foto_For_Stevany, serta meng-unzipnya setelah selesai di download, serta memindahkan hasil ekstrak file zip tersebut ke 3 folder yang sudah dibuat di awal tadi.
+
+Untuk menjalankan soal 1e, kita perlu mengganti waktu lokal komputer kita menjadi tanggal 9 April jam 22:22 seperti pada gambar berikut :
+
+[![Whats-App-Image-2021-04-21-at-10-59-01-3.jpg](https://i.postimg.cc/Dz6JrkHG/Whats-App-Image-2021-04-21-at-10-59-01-3.jpg)](https://postimg.cc/4KKxGMJ4)
+
+Dan setelah waktunya terganti, maka program akan berjalan untuk meng-zip folder Musyik, Pyoto, dan Fylm, dan menamainya Lopyu_Stevany, serta menghapus folder kosong MUSIK, FOTO, dan FILM :
+
+[![Whats-App-Image-2021-04-21-at-10-59-01-4.jpg](https://i.postimg.cc/R0gh31JQ/Whats-App-Image-2021-04-21-at-10-59-01-4.jpg)](https://postimg.cc/wtsgZmV7)v
+
 ## Soal No 2
 ## Soal No 3
 ### Main Soal No 3
