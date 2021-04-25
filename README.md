@@ -546,6 +546,241 @@ Dan setelah waktunya terganti, maka program akan berjalan untuk meng-zip folder 
 [![Whats-App-Image-2021-04-21-at-10-59-01-4.jpg](https://i.postimg.cc/R0gh31JQ/Whats-App-Image-2021-04-21-at-10-59-01-4.jpg)](https://postimg.cc/wtsgZmV7)v
 
 ## Soal No 2
+Loba bekerja di sebuah petshop terkenal, suatu saat dia mendapatkan zip yang berisi banyak
+sekali foto peliharaan dan Ia diperintahkan untuk mengkategorikan foto-foto peliharaan tersebut.
+Loba merasa kesusahan melakukan pekerjaanya secara manual, apalagi ada kemungkinan ia
+akan diperintahkan untuk melakukan hal yang sama. Kamu adalah teman baik Loba dan Ia
+meminta bantuanmu untuk membantu pekerjaannya.
+
+Source Code :
+```C
+#include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <dirent.h>
+#include <sys/wait.h>
+#include <stdio.h>
+#include <string.h>
+
+//fungsi fork
+void forkchild(char command[],char *argv[]){
+    int status;
+    pid_t child_id;
+    child_id = fork();
+    if(child_id == 0){
+        printf("%s",command);
+        execv(command,argv);
+    }
+    else{
+        ((wait(&status)) > 0);
+    }
+}
+
+
+int main() {
+    pid_t child_id1;
+    int status;
+    char path[100] = "/home/rizqi/modul2/petshop";
+    char filepath[100] = "/home/rizqi/modul2/petshop/";
+    child_id1 = fork();
+
+    if(child_id1 < 0){
+        exit(EXIT_FAILURE);
+    }
+        
+    if(child_id1 == 0){
+        //membuat folder petshop
+        char *argv_mkdir[] = {"mkdir","-p",path,NULL};
+        forkchild("/bin/mkdir",argv_mkdir);
+        //unzip pets.zip ke folder petshop
+        char *argv_unzip[] = {"unzip","-q","/home/rizqi/Downloads/pets.zip","-d",path,NULL};
+        execv("/usr/bin/unzip",argv_unzip);
+    }
+    while((wait(NULL)) > 0);
+    DIR *dir = opendir(path);
+    struct dirent *item;
+    if(dir != NULL){
+        while((item = readdir(dir)) != NULL){
+            if(strcmp(item->d_name,".") == 0 || strcmp(item->d_name,"..") == 0) continue;
+            if(fork() == 0)  continue;
+            else if(item->d_type == DT_DIR){
+                strcat(filepath,item->d_name);
+                //Menghapus folder dalam petshop
+                char *argv[] = {"rm","-rf",filepath,NULL};
+                forkchild("/bin/rm",argv);
+                exit(EXIT_SUCCESS);
+            }
+            //menghilangkan format .jpg pada string
+            char *noformat;
+            int a,n;
+            for(a=0; item->d_name[a] != '\0'; a++);
+                n = a-4+1;
+            noformat = (char*)malloc(n*sizeof(char));
+            for(a=0; a<n-1; a++)
+                noformat[a] = item->d_name[a];
+            noformat[a] = '\0';
+                	
+            char *undersplit;
+            //Split string dengn token "_"
+            while(undersplit = strtok_r(noformat,"_",&noformat)){
+                int i = 0;
+                char jenis[50];
+                char nama[50];
+                char umur[50];
+                char *semcolsplit;
+                //Split string dengan token ";"
+                while(semcolsplit = strtok_r(undersplit,";",&undersplit)){
+                    if(i == 0){
+                        //membuat folder jenis hewan 
+                        char files[80] = "/home/rizqi/modul2/petshop/";
+                        strcat(files,semcolsplit);
+                        char *argv[] = {"mkdir","-p",files,NULL};
+                        forkchild("/bin/mkdir",argv);
+                        strcpy(jenis,semcolsplit);
+                    }
+                    if(i == 1){
+                        strcpy(nama,semcolsplit);
+                    }
+                    if(i == 2){
+                        strcpy(umur,semcolsplit);
+                    }
+                    i++;
+                }
+                while((wait(NULL)) > 0);
+                char fullpath[500];
+                sprintf(fullpath,"%s%s",filepath,item->d_name);
+                
+                //copy file ke folder jenis hewan masing-masing
+                char dest[300];
+                sprintf(dest,"%s%s/%s.jpg",filepath,jenis,nama);
+                char *argv_cp[] = {"cp",fullpath,dest,NULL};
+                forkchild("/bin/cp",argv_cp);
+
+                //membuat keterangan.txt
+                char keterangan[300];
+                sprintf(keterangan,"%s%s/keteragan.txt",filepath,jenis);
+                //mengisi nama dan umur hewan di keterangan.txt
+                FILE *fp;
+                fp = fopen(keterangan,"a");
+                fprintf(fp,"nama : %s\numur : %s tahun\n\n",nama,umur);
+                fclose(fp);
+            }
+            //remove foto di folder petshop
+            strcat(filepath,item->d_name);
+            char *argv_rm[] = {"rm",filepath,NULL};
+            execv("/bin/rm",argv_rm);
+		}
+        closedir(dir);
+    }
+    return 0;
+}
+```
+
+### Soal 2a
+Untuk memudahkan dan mempersingkat pembuatan child_id dan melakukan fork untuk membuat proses baru, saya membuat fungsi untuk melakukan fork dan membuat proses baru, dengan kode sebagai berikut :
+```C
+//fungsi fork
+void forkchild(char command[],char *argv[]){
+    int status;
+    pid_t child_id;
+    child_id = fork();
+    if(child_id == 0){
+        printf("%s",command);
+        execv(command,argv);
+    }
+    else{
+        ((wait(&status)) > 0);
+    }
+}
+```
+
+Pada soal 2a ini, program harus bisa melakukan ekstrak atau unzip dari file zip pets kedalam folder petshop, dan kemudian menghapus folder-folder yang tidak diperlukan yang ada di dalam folder petshop. Pertama - tama, karena sebelumnya tidak ada folder petshop, maka kita perlu membuatnya terlebih dahulu dengan kode seperti berikut:
+```C
+child_id1 = fork();
+if(child_id1 < 0){
+    exit(EXIT_FAILURE);
+}
+        
+if(child_id1 == 0){
+    //membuat folder petshop
+    char *argv_mkdir[] = {"mkdir","-p",path,NULL};
+    forkchild("/bin/mkdir",argv_mkdir);
+```
+Jadi langkah pertama adalah melakukan ```fork()``` pada child_id1 untuk membuat proses baru, kemudian saat di child prosesnya, akan membuat direktori petshop ke ```/home/rizqi/modul2/petshop``` yang disimpan pada variabel path, kemudian menggunakan fungsi dari forkchild.
+Langkah selanjutnya yaitu melakukan ekstrak atau unzip dari file pets.zip ke folder petshop yang telah dibuat, yaitu dengan kode sebagai berikut :
+```C
+char *argv_unzip[] = {"unzip","-q","/home/rizqi/Downloads/pets.zip","-d",path,NULL};
+execv("/usr/bin/unzip",argv_unzip);
+```
+Potongan kode diatas merupakan kelanjutan dari membuat folder petshop, jadi pada saat child proses, setelah fungsi forkchild, selanjutnya adalah meakukan unzip dari file zip pets.zip ke ```/home/rizqi/modul2/petshop``` yang disimpan pada variabel path, dan disini saya menggunakan ```-q``` agar berjalan secara _quiet_ atau tidak ada notifikasi di terminal.
+Setelah melakukan unzip, dikarenakan tidak bisa menghapus semua folder yang tidak berguna secara otomatis menggunakan proses baru dan exec, maka kita harus membaca file satu persatu dan jika file tersebut berupa direktori atau folder, maka akan dihapus. Untuk membaca file yang ada pada folder petshop, yang pertama harus dilakukan adalah membuka direktori dari petshop tersebut dengan cara :
+```C
+DIR *dir = opendir(path);
+```
+Dan setelah sudah dibuka, setelah itu kita mencari item atau file yang berupa folder, dengan cara menggunakan percabangan:
+```C
+else if(item->d_type == DT_DIR)
+```
+Dan jika ditemukan, maka folder tersebut akan dihapus beserta isinya dengan kode :
+```C
+strcat(filepath,item->d_name);
+//Menghapus folder dalam petshop
+char *argv[] = {"rm","-rf",filepath,NULL};
+forkchild("/bin/rm",argv);
+exit(EXIT_SUCCESS);
+```
+Saat ditemukan item atau file yang berupa direktori, maka nama direktori tersebut akan ditambahkan pada path menggunakan ```strcat```, dan itu akan digunakan sebagai path dari folder yang akan dihapus pada saat membuat proses untuk menghapus folder.
+
+### Soal 2b
+Pada soal 2a, program diharapkan bisa membuat folder dari jenis hewan yang terdapat pada petshop agar nantinya foto - foto dari hewan tersebut dapat dikategorikan berdasarkan jenis hewannya.
+Pertama - tama, kita perlu mengetahui format penamaan dari foto - foto yang ada pada folder petshop. Format penamaan yang terdapat pada folder petshop adalah sebagai berikut :
+```
+jenis;nama;umur.jpg
+```
+Selain itu, karena ada pada foto yang berisi 2 hewan, maka format penamaannya agak sedikit berbeda seperti berikut :
+```
+jenis1;nama1;umur1_jenis2;nama2;umur2.jpg
+```
+Maka dari itu kita perlu membagi atau meng-_split_ nama foto tersebut menjadi beberapa bagian. 
+Menggunakan file listing yang ada pada sub soal sebelumnya, kita bisa mengetahui nama foto dari masing - masing foto di folder petshop.
+Untuk yang pertama, kita perlu untuk menghilangkan format ```.jpg``` pada string foto dan menyimpannya ke dalam suatu variabel, maka dari itu, saya menggunakan kode ini untuk menghilangkan format ```.jpg``` :
+```C
+char *noformat;
+int a,n;
+for(a=0; item->d_name[a] != '\0'; a++);
+	n = a-4+1;
+noformat = (char*)malloc(n*sizeof(char));
+for(a=0; a<n-1; a++)
+	noformat[a] = item->d_name[a];
+noformat[a] = '\0';
+```
+Cara kerja potongan kode diataas adalah, pada loop for pertama program akan menghasilkan n yang merupakan panjang dari nama foto dikurangi 4, dan pada loop for kedua, program akan menyalin nama foto ke variabel ```noformat``` hanya hingga n, dikarenakan format file yaitu ```.jpg``` ada di 4 index terakhir dari nama foto.
+Kemudian setelah selesai menghapus format ```.jpg```, kita perlu membagi atau meng-_split_ nama foto tadi saat ada 2 hewan pada foto tersebut (ada _ pada nama foto). Saya menggunakan cara sebagai berikut :
+```C
+undersplit = strtok_r(noformat,"_",&noformat)
+```
+Jadi program akan membagi string nama foto yang sudah disimpan pada variabel ```noformat``` (sudah dihilangkan format ```.jpg```) dengan delimiter ```_``` dan akan menyimpannya ke variabel ```undersplit```.
+Langkah selanjutnya adalah untuk membagi atau meng-_split_ string tersebut berdasarkan jenis hewan, nama hewan dan umur hewan dengan menggunakan kode sebagai berikut :
+```C
+while(semcolsplit = strtok_r(undersplit,";",&undersplit)){
+	if(i == 0){
+		//membuat folder jenis hewan 
+		char files[80] = "/home/rizqi/modul2/petshop/";
+		strcat(files,semcolsplit);
+		char *argv[] = {"mkdir","-p",files,NULL};
+		forkchild("/bin/mkdir",argv);
+		strcpy(jenis,semcolsplit);
+		}
+	if(i == 1){
+		strcpy(nama,semcolsplit);
+	}
+	if(i == 2){
+		strcpy(umur,semcolsplit);
+	}
+	i++;
+}
+```
+Cara kerjanya adalah, string yang sudah disimpan di variabel ```undersplit``` akan dibagi atau displit lagi menggunakan delimiter ```;```, yang nantinya string tersebut akan dibagi menjadi jenis hewan, nama hewan, dan umurnya dan disimpan ke variabel ```semcolsplit```. Dengan deklarasi awal variabel ```i = 0```, maka menggunakan percabangan untuk index 1 yaitu jenis hewan, akan dibuatkan folder dengan nama jenis hewan tersebut. Variabel files disini berfungsi untuk menyimpan path dari direktori yang akan dibuat.  
 ## Soal No 3
 ### Main Soal No 3
 Berikut adalah main source code dari soal no3. Tahapan proses soal no.3 :
