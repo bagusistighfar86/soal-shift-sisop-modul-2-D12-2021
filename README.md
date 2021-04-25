@@ -832,20 +832,32 @@ Disini program akan menghapus file foto yang ada di path yang telah ditentukan.
 
 Dan setelah semua file foto sudah diproses, maka direktori petshop akan dihapus dan program akan berhenti berjalan.
 
-### Jalannya Program
+### Jalannya Program 
+Pada kondisi awal, yang ada pada folder modul2 hanyalah seperti ini :
 
 [![2-1.png](https://i.postimg.cc/TYqzmT29/2-1.png)](https://postimg.cc/N5FCvqH9)
 
+Dan setelah program dijalankan, program akan membuat folder petshop dan melakukan unzip file pets.zip dan memasukkan isinya ke folder petshop yang nantinya isinya sebagai berikut :
+
 [![2-2.png](https://i.postimg.cc/nhF6GNCt/2-2.png)](https://postimg.cc/dLfHqH2W)
+
+Setelah itu folder - folder yang tidak digunakan akan dihapus dan isi folder petshop akan menjadi :
 
 [![2-3.png](https://i.postimg.cc/pdy4g8fG/2-3.png)](https://postimg.cc/GBwXD4SG)
 
+Setelah itu, program akan membuat folder sesuai dengan jenis hewan yang ada di folder petshop serta menyalin file foto ke folder yang sesuai dengan jenis hewannya, dan menghapus file foto aslinya, dan hasilnya seperti berikut :
+
 [![2-4.png](https://i.postimg.cc/TPSFGwQR/2-4.png)](https://postimg.cc/DWrBP7tD)
+
+Dan jika dibuka salah satu foldernya, maka disana sudah ada file foto sesuai jenis hewan, dan nama file tersebut adalah nama hewannya, dan ada file keterangan.txt seperti gambar berikut:
 
 [![2-5.png](https://i.postimg.cc/50CGtVk8/2-5.png)](https://postimg.cc/MMztshwG)
 
+Jika file keterangan.txt dibuka, maka disana terdapat catatan nama dan umur dari hewan yang ada pada folder tersebut seperti pada gambar berikut :
+
 [![2-6.png](https://i.postimg.cc/yxCGgbwt/2-6.png)](https://postimg.cc/ygnj2v6y)
 
+(NB : Ini adalah penjelasan alur program secara lambat, dan pada aslinya saat program dijalankan semuanya berjalan dengan cepat)
 ### Kendala
 Kendala saat pengerjaan praktikum ini adalah karena adanya teman saya yang tidak ada kabar, maka praktikum hanya dikerjakan oleh 2 orang, dan maka dari itu hanya 2 soal yang bisa diselesaikan yaitu no 1 dan no 3.
 
