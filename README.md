@@ -543,7 +543,10 @@ Untuk menjalankan soal 1e, kita perlu mengganti waktu lokal komputer kita menjad
 
 Dan setelah waktunya terganti, maka program akan berjalan untuk meng-zip folder Musyik, Pyoto, dan Fylm, dan menamainya Lopyu_Stevany, serta menghapus folder kosong MUSIK, FOTO, dan FILM :
 
-[![Whats-App-Image-2021-04-21-at-10-59-01-4.jpg](https://i.postimg.cc/R0gh31JQ/Whats-App-Image-2021-04-21-at-10-59-01-4.jpg)](https://postimg.cc/wtsgZmV7)v
+[![Whats-App-Image-2021-04-21-at-10-59-01-4.jpg](https://i.postimg.cc/R0gh31JQ/Whats-App-Image-2021-04-21-at-10-59-01-4.jpg)](https://postimg.cc/wtsgZmV7)
+
+### Kendala
+Kendala saya saat mengerjakan no 1 adalah untuk memindahkan semua isi folder ke folder yang lain, karena pada awalnya saya hanya menggunakan command mv dan akhirnya tidak bisa berjalan, dan saya bingung menggunakan cara apalagi. Dan setelah mencari referensi di internet, ternyata bisa menggunakan modifikasi file listing untuk memindahkan file satu persatu. 
 
 ## Soal No 2
 Loba bekerja di sebuah petshop terkenal, suatu saat dia mendapatkan zip yang berisi banyak
@@ -780,7 +783,75 @@ while(semcolsplit = strtok_r(undersplit,";",&undersplit)){
 	i++;
 }
 ```
-Cara kerjanya adalah, string yang sudah disimpan di variabel ```undersplit``` akan dibagi atau displit lagi menggunakan delimiter ```;```, yang nantinya string tersebut akan dibagi menjadi jenis hewan, nama hewan, dan umurnya dan disimpan ke variabel ```semcolsplit```. Dengan deklarasi awal variabel ```i = 0```, maka menggunakan percabangan untuk index 1 yaitu jenis hewan, akan dibuatkan folder dengan nama jenis hewan tersebut. Variabel files disini berfungsi untuk menyimpan path dari direktori yang akan dibuat.  
+Cara kerjanya adalah, string yang sudah disimpan di variabel ```undersplit``` akan dibagi atau displit lagi menggunakan delimiter ```;```, yang nantinya string tersebut akan dibagi menjadi jenis hewan, nama hewan, dan umurnya dan disimpan ke variabel ```semcolsplit```. Dengan deklarasi awal variabel ```i = 0```, maka menggunakan percabangan untuk index 1 yaitu jenis hewan, akan dibuatkan folder dengan nama jenis hewan tersebut. Variabel files disini berfungsi untuk menyimpan path dari direktori yang akan dibuat. Setelah itu membuat proses baru dengan fungsi forkchild untuk membuat proses ```mkdir``` atau membuat folder yang patnya adalah variabel files. Kemudian string jenis hewan tersebut akan disalin ke variabel ```jenis```. Kemudian percabangan jika index 1 yaitu nama hewan, string tersebut akan disalin ke variabel ```nama```, begitu juga dengan percabangan jika index 2 yaitu umur, string tersebut akan disalin ke variabel ```umur```. Variabel jenis, nama dan umur akan digunakan untuk subsoal selanjutnya.
+
+### Soal 2c dan 2d
+Pada soal 2c, program harus dapat memindahkan foto ke folder yang sesuai dengan jenis hewan tersebut kemudian mengganti nama foto tersebut menjadi hanya namanya saja, contoh :
+```
+joni.jpg
+```
+Disini saya tidak memindahkan foto, namun menyalin foto tersebut kedalam folder yang sesuai dengan jenis hewannya, kemudian mengganti nama foto menjadi hanya nama hewannya saja,dengan cara seperti berikut :
+```C
+char fullpath[500];
+sprintf(fullpath,"%s%s",filepath,item->d_name);
+char dest[300];
+sprintf(dest,"%s%s/%s.jpg",filepath,jenis,nama);
+char *argv_cp[] = {"cp",fullpath,dest,NULL};
+forkchild("/bin/cp",argv_cp);
+```
+Pertama, saya mendeklarasikan variabel ```fullpath``` untuk menyimpan path dari foto yang akan disalin, kemudian menggunakan ```sprintf``` untuk merangakai path dari foto dan disimpan pada variabel fullpath, saya juga mendeklarasikan variabel ```dest``` untuk menyimpan path tujuan foto akan dipindah dan namanya, dan menggunakan ```sprintf``` juga untuk merangkai path tujuan di variabel dest. Kemudian saya membuat proses baru yang isinya untuk menyalin foto ke path dest.
+Karena pada subsoal sebelumnya jika ada 2 hewan stringnya sudah displit, maka dari itu soal 2c juga sudah mencakup 2d.
+
+### Soal 2e
+Pada soal 2e, program diharuskan untuk membuat file ```keterangan.txt``` pada setiap folder jenis hewan untuk mencatat nama dan umur masing - masing hewan pada folder tersebut. Format pencatatan nama dan umur hewan di ```keterangan.txt``` ini adalah sebagai berikut :
+```
+nama : joni
+umur : 3 tahun
+
+nama : miko
+umur : 2 tahun
+```
+Program untuk membuat ```keterangan.txt``` dan mencatat nama dan umur hewannya adalah :
+```C
+ char keterangan[300];
+ sprintf(keterangan,"%s%s/keteragan.txt",filepath,jenis);
+ FILE *fp;
+ fp = fopen(keterangan,"a");
+ fprintf(fp,"nama : %s\numur : %s tahun\n\n",nama,umur);
+ fclose(fp);
+```
+Cara kerja potongan program ini adalah, awalnya mendeklarasikan variabel ```keterangan``` yang nantinya digunakan untuk menyimpan path dimana file ```keterangan.txt``` akan dibuat, dan menggunakan ```sprintf``` untuk merangkai path tersebut. Dan setelah itu, file ```keterangan.txt``` akan dibuka dan menggunakan ```fprintf``` untuk mencatat nama serta umur dari hewan tersebut.
+
+Kemudian karena pada soal 2c tadi saya hanya menyalin file fotonya, maka diluar folder jenis hewan masih ada file foto yang tertinggal, maka dari itu file tersebut perlu dihapus dengan kode sebagai berikut :
+```C
+strcat(filepath,item->d_name);
+char *argv_rm[] = {"rm",filepath,NULL};
+execv("/bin/rm",argv_rm);
+```
+Disini program akan menghapus file foto yang ada di path yang telah ditentukan.
+
+Dan setelah semua file foto sudah diproses, maka direktori petshop akan dihapus dan program akan berhenti berjalan.
+
+### Jalannya Program
+
+[![2-1.png](https://i.postimg.cc/TYqzmT29/2-1.png)](https://postimg.cc/N5FCvqH9)
+
+[![2-2.png](https://i.postimg.cc/nhF6GNCt/2-2.png)](https://postimg.cc/dLfHqH2W)
+
+[![2-3.png](https://i.postimg.cc/pdy4g8fG/2-3.png)](https://postimg.cc/GBwXD4SG)
+
+[![2-4.png](https://i.postimg.cc/TPSFGwQR/2-4.png)](https://postimg.cc/DWrBP7tD)
+
+[![2-5.png](https://i.postimg.cc/50CGtVk8/2-5.png)](https://postimg.cc/MMztshwG)
+
+[![2-6.png](https://i.postimg.cc/yxCGgbwt/2-6.png)](https://postimg.cc/ygnj2v6y)
+
+### Kendala
+Kendala saat pengerjaan praktikum ini adalah karena adanya teman saya yang tidak ada kabar, maka praktikum hanya dikerjakan oleh 2 orang, dan maka dari itu hanya 2 soal yang bisa diselesaikan yaitu no 1 dan no 3.
+
+Kendala saat mengerjakan revisi no 2 adalah awalnya saya bingung cara untuk menghapus folder yang tidak berguna dikarenakan tidak bisa menggunakan command rm secara langsung untuk menghapus semua folder, dan ternyata setelah melihat referensi internet, ternyata bisa menggunakan modifikasi file listing.
+Kemudian saya juga awalnya bingung cara membagi string menggunakan pola tertentu, dan saya menemukan cara di internet yaitu dengan menggunakan strtok.
+
 ## Soal No 3
 ### Main Soal No 3
 Berikut adalah main source code dari soal no3. Tahapan proses soal no.3 :
